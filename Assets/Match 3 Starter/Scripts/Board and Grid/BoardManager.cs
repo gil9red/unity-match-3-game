@@ -21,14 +21,14 @@
  */
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour {
 	public static BoardManager instance;
 	public List<Sprite> characters = new List<Sprite>();
 	public GameObject tile;
-	public int xSize, ySize;
+	public int Rows;
+	public int Columns;
 
 	private GameObject[,] tiles;
 
@@ -42,14 +42,22 @@ public class BoardManager : MonoBehaviour {
     }
 
 	private void CreateBoard (float xOffset, float yOffset) {
-		tiles = new GameObject[xSize, ySize];
+		tiles = new GameObject[Columns, Rows];
 
         float startX = transform.position.x;
 		float startY = transform.position.y;
 
-		for (int x = 0; x < xSize; x++) {
-			for (int y = 0; y < ySize; y++) {
-				GameObject newTile = Instantiate(tile, new Vector3(startX + (xOffset * x), startY + (yOffset * y), 0), tile.transform.rotation);
+		for (int y = 0; y < Rows; y++) {
+			var posY = startY + (yOffset * y);
+
+			for (int x = 0; x < Columns; x++) {
+				var vector = new Vector3(startX + (xOffset * x), posY, 0);
+				GameObject newTile = Instantiate(tile, vector, tile.transform.rotation);
+				newTile.transform.parent = transform;
+				
+				Sprite newSprite = characters[Random.Range(0, characters.Count)];
+				newTile.GetComponent<SpriteRenderer>().sprite = newSprite;
+
 				tiles[x, y] = newTile;
 			}
         }

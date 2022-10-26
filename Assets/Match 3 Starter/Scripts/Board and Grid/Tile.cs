@@ -21,12 +21,13 @@
  */
 
 using UnityEngine;
+using System.Collections.Generic;
 
 
 public class Tile : MonoBehaviour
 {
     private static Color selectedColor = new Color(.5f, .5f, .5f, 1.0f);
-	private static Color defaultColor;
+    private static Color defaultColor;
 
     private static Tile previousSelected = null;
 
@@ -40,7 +41,7 @@ public class Tile : MonoBehaviour
     void Awake()
     {
         render = GetComponent<SpriteRenderer>();
-		defaultColor = render.color;
+        defaultColor = render.color;
     }
 
     private void Select()
@@ -58,20 +59,67 @@ public class Tile : MonoBehaviour
         previousSelected = null;
     }
 
-	void OnMouseDown()
-	{
-		if (render.sprite == null || BoardManager.instance.IsShifting)
-			return;
+    void OnMouseDown()
+    {
+        if (render.sprite == null || BoardManager.instance.IsShifting)
+        {
+            return;
+        }
 
-		if (isSelected)
-		{
-        	Deselect();
-			return;
-		}
+        if (isSelected)
+        {
+            Deselect();
+            return;
+        }
 
         if (previousSelected == null)
+        {
             Select();
+        }
         else
-            previousSelected.Deselect();
-	}
+        {
+            // Поиск соседней фишки
+            if (GetAllAdjacentTiles().Contains(previousSelected.gameObject))
+            {
+                SwapSprite(previousSelected.render);
+                previousSelected.Deselect();
+            }
+            else
+            {
+                previousSelected.Deselect();
+                Select();
+            }
+        }
+    }
+
+    private GameObject GetAdjacentTile(Vector2 castDir)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, castDir);
+        if (hit.collider != null)
+        {
+            return hit.collider.gameObject;
+        }
+        return null;
+    }
+
+    private List<GameObject> GetAllAdjacentTiles()
+    {
+        var items = new List<GameObject>();
+        foreach (var dir in adjacentDirections)
+        {
+            items.Add(GetAdjacentTile(dir));
+        }
+        return items;
+    }
+
+    public void SwapSprite(SpriteRenderer other)
+    {
+        if (render.sprite == other.sprite)
+        {
+            return;
+        }
+
+        (render.sprite, other.sprite) = (other.sprite, render.sprite);
+        SFXManager.instance.PlaySFX(Clip.Swap);
+    }
 }

@@ -21,33 +21,57 @@
  */
 
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-public class Tile : MonoBehaviour {
-	private static Color selectedColor = new Color(.5f, .5f, .5f, 1.0f);
-	private static Tile previousSelected = null;
 
-	private SpriteRenderer render;
-	private bool isSelected = false;
+public class Tile : MonoBehaviour
+{
+    private static Color selectedColor = new Color(.5f, .5f, .5f, 1.0f);
+	private static Color defaultColor;
 
-	private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+    private static Tile previousSelected = null;
 
-	void Awake() {
-		render = GetComponent<SpriteRenderer>();
+    private SpriteRenderer render;
+    private bool isSelected = false;
+
+    private Vector2[] adjacentDirections = new Vector2[] {
+        Vector2.up, Vector2.down, Vector2.left, Vector2.right
+    };
+
+    void Awake()
+    {
+        render = GetComponent<SpriteRenderer>();
+		defaultColor = render.color;
     }
 
-	private void Select() {
-		isSelected = true;
-		render.color = selectedColor;
-		previousSelected = gameObject.GetComponent<Tile>();
-		SFXManager.instance.PlaySFX(Clip.Select);
-	}
+    private void Select()
+    {
+        isSelected = true;
+        render.color = selectedColor;
+        previousSelected = gameObject.GetComponent<Tile>();
+        SFXManager.instance.PlaySFX(Clip.Select);
+    }
 
-	private void Deselect() {
-		isSelected = false;
-		render.color = Color.white;
-		previousSelected = null;
-	}
+    private void Deselect()
+    {
+        isSelected = false;
+        render.color = defaultColor;
+        previousSelected = null;
+    }
 
+	void OnMouseDown()
+	{
+		if (render.sprite == null || BoardManager.instance.IsShifting)
+			return;
+
+		if (isSelected)
+		{
+        	Deselect();
+			return;
+		}
+
+        if (previousSelected == null)
+            Select();
+        else
+            previousSelected.Deselect();
+	}
 }

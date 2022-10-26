@@ -23,43 +23,60 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class BoardManager : MonoBehaviour {
-	public static BoardManager instance;
-	public List<Sprite> characters = new List<Sprite>();
-	public GameObject tile;
-	public int Rows;
-	public int Columns;
+public class BoardManager : MonoBehaviour
+{
+    public static BoardManager instance;
+    public List<Sprite> characters = new List<Sprite>();
+    public GameObject tile;
+    public int Rows;
+    public int Columns;
 
-	private GameObject[,] tiles;
+    private GameObject[,] tiles;
 
-	public bool IsShifting { get; set; }
+    public bool IsShifting { get; set; }
 
-	void Start () {
-		instance = GetComponent<BoardManager>();
+    void Start()
+    {
+        instance = GetComponent<BoardManager>();
 
-		Vector2 offset = tile.GetComponent<SpriteRenderer>().bounds.size;
+        Vector2 offset = tile.GetComponent<SpriteRenderer>().bounds.size;
         CreateBoard(offset.x, offset.y);
     }
 
-	private void CreateBoard (float xOffset, float yOffset) {
-		tiles = new GameObject[Columns, Rows];
+    private void CreateBoard(float xOffset, float yOffset)
+    {
+        tiles = new GameObject[Columns, Rows];
 
         float startX = transform.position.x;
-		float startY = transform.position.y;
+        float startY = transform.position.y;
 
-		for (int y = 0; y < Rows; y++) {
-			var posY = startY + (yOffset * y);
+        Sprite[] previousLeft = new Sprite[Rows];
+        Sprite previousBelow = null;
 
-			for (int x = 0; x < Columns; x++) {
-				var vector = new Vector3(startX + (xOffset * x), posY, 0);
-				GameObject newTile = Instantiate(tile, vector, tile.transform.rotation);
-				newTile.transform.parent = transform;
-				
-				Sprite newSprite = characters[Random.Range(0, characters.Count)];
-				newTile.GetComponent<SpriteRenderer>().sprite = newSprite;
+        // Заполнение идет направо и вверх
+        for (int x = 0; x < Columns; x++)
+        {
+            var posX = startX + (xOffset * x);
 
-				tiles[x, y] = newTile;
-			}
+            for (int y = 0; y < Rows; y++)
+            {
+                var posY = startY + (yOffset * y);
+                var vector = new Vector3(posX, posY, 0);
+                GameObject newTile = Instantiate(tile, vector, tile.transform.rotation);
+                newTile.transform.parent = transform;
+
+                List<Sprite> possibleCharacters = new List<Sprite>();
+                possibleCharacters.AddRange(characters);
+                possibleCharacters.Remove(previousLeft[y]);
+                possibleCharacters.Remove(previousBelow);
+
+                Sprite newSprite = possibleCharacters[Random.Range(0, possibleCharacters.Count)];
+                newTile.GetComponent<SpriteRenderer>().sprite = newSprite;
+                tiles[x, y] = newTile;
+
+                previousLeft[y] = newSprite;
+                previousBelow = newSprite;
+            }
         }
     }
 

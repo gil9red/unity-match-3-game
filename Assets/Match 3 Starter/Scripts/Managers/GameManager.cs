@@ -29,13 +29,15 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
 
     public GameObject faderObj;
     public Image faderImg;
-    public bool gameOver = false;
+    public bool GameOver = false;
 
     public float fadeSpeed = .02f;
+
+    public int MoveCounter = 60;
 
     private Color fadeTransparency = new Color(0, 0, 0, .04f);
     private string currentScene;
@@ -44,10 +46,10 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         // Only 1 Game Manager can exist at a time
-        if (instance == null)
+        if (Instance == null)
         {
             DontDestroyOnLoad(gameObject);
-            instance = GetComponent<GameManager>();
+            Instance = GetComponent<GameManager>();
             SceneManager.sceneLoaded += OnLevelFinishedLoading;
         }
         else
@@ -67,8 +69,8 @@ public class GameManager : MonoBehaviour
     // Load a scene with a specified string name
     public void LoadScene(string sceneName)
     {
-        instance.StartCoroutine(Load(sceneName));
-        instance.StartCoroutine(FadeOut(instance.faderObj, instance.faderImg));
+        Instance.StartCoroutine(Load(sceneName));
+        Instance.StartCoroutine(FadeOut(Instance.faderObj, Instance.faderImg));
     }
 
     // Reload the current scene
@@ -80,7 +82,7 @@ public class GameManager : MonoBehaviour
     private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
         currentScene = scene.name;
-        instance.StartCoroutine(FadeIn(instance.faderObj, instance.faderImg));
+        Instance.StartCoroutine(FadeIn(Instance.faderObj, Instance.faderImg));
     }
 
     //Iterate the fader transparency to 100%

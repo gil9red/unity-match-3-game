@@ -49,7 +49,7 @@ public class Tile : MonoBehaviour
         _isSelected = true;
         _render.color = s_selectedColor;
         s_previousSelected = gameObject.GetComponent<Tile>();
-        SFXManager.instance.PlaySFX(Clip.Select);
+        SFXManager.Instance.PlaySFX(Clip.Select);
     }
 
     private void Deselect()
@@ -153,7 +153,7 @@ public class Tile : MonoBehaviour
             StopCoroutine(BoardManager.Instance.FindNullTiles());
             StartCoroutine(BoardManager.Instance.FindNullTiles());
 
-            SFXManager.instance.PlaySFX(Clip.Clear);
+            SFXManager.Instance.PlaySFX(Clip.Clear);
         }
     }
 
@@ -163,6 +163,7 @@ public class Tile : MonoBehaviour
             return;
 
         (_render.sprite, other.sprite) = (other.sprite, _render.sprite);
-        SFXManager.instance.PlaySFX(Clip.Swap);
+        SFXManager.Instance.PlaySFX(Clip.Swap);
+        GUIManager.Instance.MoveCounter--;
     }
 }

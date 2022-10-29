@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  */
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class GUIManager : MonoBehaviour
 {
-    public static GUIManager instance;
+    public static GUIManager Instance;
 
     public GameObject gameOverPanel;
     public Text yourScoreTxt;
@@ -35,23 +35,52 @@ public class GUIManager : MonoBehaviour
     public Text scoreTxt;
     public Text moveCounterTxt;
 
-    private int score;
+    private int _score;
+
+    public int Score
+    {
+        get => _score;
+        set
+        {
+            _score = value;
+            scoreTxt.text = _score.ToString();
+        }
+    }
+
+    private int _moveCounter;
+
+    public int MoveCounter
+    {
+        get => _moveCounter;
+        set
+        {
+            _moveCounter = value;
+            if (_moveCounter <= 0)
+            {
+                _moveCounter = 0;
+                StartCoroutine(WaitForShifting());
+            }
+
+            moveCounterTxt.text = _moveCounter.ToString();
+        }
+    }
 
     void Awake()
     {
-        instance = GetComponent<GUIManager>();
+        Instance = GetComponent<GUIManager>();
+        MoveCounter = GameManager.Instance.MoveCounter;
     }
 
     // Show the game over panel
     public void GameOver()
     {
-        GameManager.instance.gameOver = true;
+        GameManager.Instance.GameOver = true;
 
         gameOverPanel.SetActive(true);
 
-        if (score > PlayerPrefs.GetInt("HighScore"))
+        if (Score > PlayerPrefs.GetInt("HighScore"))
         {
-            PlayerPrefs.SetInt("HighScore", score);
+            PlayerPrefs.SetInt("HighScore", Score);
             highScoreTxt.text = "New Best: " + PlayerPrefs.GetInt("HighScore").ToString();
         }
         else
@@ -59,6 +88,13 @@ public class GUIManager : MonoBehaviour
             highScoreTxt.text = "Best: " + PlayerPrefs.GetInt("HighScore").ToString();
         }
 
-        yourScoreTxt.text = score.ToString();
+        yourScoreTxt.text = Score.ToString();
+    }
+
+    private IEnumerator WaitForShifting()
+    {
+        yield return new WaitForSeconds(.25f);
+        yield return new WaitUntil(() => !BoardManager.Instance.IsShifting);
+        GameOver();
     }
 }

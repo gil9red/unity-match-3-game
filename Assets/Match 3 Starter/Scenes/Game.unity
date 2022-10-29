@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3e5bbfb8c13d8f479f8d00fcbc7884e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characters:
+  Characters:
   - {fileID: 21300000, guid: 093363a40d9c07a4082e1c0f82d20fc3, type: 3}
   - {fileID: 21300000, guid: fbdc2dd4941e61244980c24b6aaea0de, type: 3}
   - {fileID: 21300000, guid: 2ee3c05b5ca27554992a945764c99837, type: 3}
@@ -413,7 +413,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e3169e90983853d4d9d73233512118e2, type: 3}
   - {fileID: 21300000, guid: dca7a45bef5bffa4395181b03e04d081, type: 3}
   - {fileID: 21300000, guid: 6e84ec6047673d440aa377e4980bfea8, type: 3}
-  tile: {fileID: 1000010131827792, guid: 6417c2a8214b7ab45b35ac5e9e62c2cb, type: 3}
+  Tile: {fileID: 1000010131827792, guid: 6417c2a8214b7ab45b35ac5e9e62c2cb, type: 3}
   Rows: 12
   Columns: 8
 --- !u!4 &1279217655

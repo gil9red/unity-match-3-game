@@ -36,10 +36,13 @@ public class BoardManager : MonoBehaviour
 
     public bool IsShifting { get; set; }
 
+    void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
-        Instance = GetComponent<BoardManager>();
-
         Vector2 offset = Tile.GetComponent<SpriteRenderer>().bounds.size;
         CreateBoard(offset.x, offset.y);
     }

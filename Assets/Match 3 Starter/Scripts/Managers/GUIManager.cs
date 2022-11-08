@@ -67,7 +67,11 @@ public class GUIManager : MonoBehaviour
 
     void Awake()
     {
-        Instance = GetComponent<GUIManager>();
+        Instance = this;
+    }
+
+    void Start()
+    {
         MoveCounter = GameManager.Instance.MoveCounter;
     }
 

@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             DontDestroyOnLoad(gameObject);
-            Instance = GetComponent<GameManager>();
+            Instance = this;
             SceneManager.sceneLoaded += OnLevelFinishedLoading;
         }
         else
